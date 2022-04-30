@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Portal : MonoBehaviour
 {
+    [SerializeField] MeshRenderer _renderer;
     [SerializeField] Portal _linkedPortal;
     [SerializeField] float _portalQuality = 0.5f;
+    [SerializeField] bool _flip;
 
     Matrix4x4 _portalMatrix;
     int _renderDepth;
@@ -13,19 +15,17 @@ public class Portal : MonoBehaviour
     RenderTexture _texture;
     Camera _mainCam;
     Camera _portalCam;
-    MeshRenderer _linkedRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
         _mainCam = Camera.main;
         _portalCam = GetComponentInChildren<Camera>();
-        _linkedRenderer = _linkedPortal.GetComponentInChildren<MeshRenderer>();
     }
 
     void LateUpdate()
     {
-        if (!_mainCam.IsObjectVisible(_linkedRenderer)) return;
+        if (!_mainCam.IsObjectVisible(_linkedPortal._renderer) && !_mainCam.IsObjectVisible(_renderer)) return;
 
         if (_texture == null || _texture.width != Screen.width || _texture.height != Screen.height)
         {
@@ -38,14 +38,12 @@ public class Portal : MonoBehaviour
             _portalCam.targetTexture = _texture;
         }
 
-        _portalCam.Render();
-
         _portalMatrix = transform.localToWorldMatrix * _linkedPortal.transform.worldToLocalMatrix;
         _portalCam.transform.position = _portalMatrix.MultiplyPoint(_mainCam.transform.position);
         _portalCam.transform.rotation = _portalMatrix.rotation * _mainCam.transform.rotation;
 
-        _linkedRenderer.material.SetTexture("_Texture", Texture2D.blackTexture);
+        _linkedPortal._renderer.material.SetTexture("_Texture", Texture2D.blackTexture);
         _portalCam.Render();
-        _linkedRenderer.material.SetTexture("_Texture", _texture);
+        _linkedPortal._renderer.material.SetTexture("_Texture", _texture);
     }
 }

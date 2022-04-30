@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea629cc8e1fe26b4cbee5b83e893e50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _renderer: {fileID: 4428086039984159487}
   _linkedPortal: {fileID: 0}
   _portalQuality: 0.5
   _flip: 0
